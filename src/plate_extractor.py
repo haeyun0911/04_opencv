@@ -1,15 +1,20 @@
 import cv2
 import numpy as np
-
+import datetime
 
 for i in range (1,6):
     file_name = f"../img/car{i}.jpg"
+
 win_name = "License Plate Extractor"
 img = cv2.imread(file_name)
 rows, cols = img.shape[:2]
 draw = img.copy()
 pts_cnt = 0
 pts = np.zeros((4,2), dtype=np.float32)
+
+timestamp = datetime.dateime.now().strftime("%Y%m%d_%H%M%S")
+
+filename2 = f"extracted_plates/plate_{timestamp}.jpg"
 
 def onMouse(event, x, y, flags, param):  #마우스 이벤트 콜백 함수 구현 ---① 
     global  pts_cnt                     # 마우스로 찍은 좌표의 갯수 저장
