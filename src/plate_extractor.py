@@ -17,7 +17,7 @@ timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
 save_dir = "../extracted_plates"
 if not os.path.exists(save_dir):
     os.makedirs(save_dir)
-filename2 = f"plate_{timestamp}.png"
+filename2 = os.path.join(save_dir, f"plate_{timestamp}.png")
 
 def onMouse(event, x, y, flags, param):  #마우스 이벤트 콜백 함수 구현 ---① 
     global  pts_cnt                     # 마우스로 찍은 좌표의 갯수 저장
