@@ -49,7 +49,14 @@ def onMouse(event, x, y, flags, param):  #마우스 이벤트 콜백 함수 구�
             mtrx = cv2.getPerspectiveTransform(pts1, pts2)
             # 원근 변환 적용
             result = cv2.warpPerspective(img, mtrx, (int(width), int(height)))
-            cv2.imshow('scanned', result)
+            success = cv2.imwrite(filename2, result)
+            if success:
+                print(f"번호판 저장 완료: {filename2}")
+                cv2.imshow('Extracted Plate', result)
+
+            else:
+                print("저장 실패!")
+         
 cv2.imshow(win_name, img)
 cv2.setMouseCallback(win_name, onMouse)    # 마우스 콜백 함수를 GUI 윈도우에 등록 ---④
 cv2.waitKey(0)
