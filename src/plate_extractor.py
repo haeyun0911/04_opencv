@@ -3,7 +3,7 @@ import numpy as np
 
 for i in range (1,6):
     file_name = f"../img/car{i}.jpg"
-win_name = "scanning"
+win_name = "License Plate Extractor"
 img = cv2.imread(file_name)
 rows, cols = img.shape[:2]
 draw = img.copy()
