@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 
+
 for i in range (1,6):
     file_name = f"../img/car{i}.jpg"
 win_name = "License Plate Extractor"
@@ -32,13 +33,9 @@ def onMouse(event, x, y, flags, param):  #마우스 이벤트 콜백 함수 구�
             pts1 = np.float32([topLeft, topRight, bottomRight , bottomLeft])
 
             # 변환 후 영상에 사용할 서류의 폭과 높이 계산 ---③ 
-            w1 = abs(bottomRight[0] - bottomLeft[0])    # 상단 좌우 좌표간의 거리
-            w2 = abs(topRight[0] - topLeft[0])          # 하당 좌우 좌표간의 거리
-            h1 = abs(topRight[1] - bottomRight[1])      # 우측 상하 좌표간의 거리
-            h2 = abs(topLeft[1] - bottomLeft[1])        # 좌측 상하 좌표간의 거리
-            width = max([w1, w2])                       # 두 좌우 거리간의 최대값이 서류의 폭
-            height = max([h1, h2])                      # 두 상하 거리간의 최대값이 서류의 높이
-            
+            width = 300
+            height= 150
+
             # 변환 후 4개 좌표
             pts2 = np.float32([[0,0], [width-1,0], 
                                 [width-1,height-1], [0,height-1]])
