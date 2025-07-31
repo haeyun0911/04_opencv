@@ -14,7 +14,7 @@ pts_cnt = 0
 pts = np.zeros((4,2), dtype=np.float32)
 
 timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-save_dir = "../img/extracted_plates"
+save_dir = "../extracted_plates"
 if not os.path.exists(save_dir):
     os.makedirs(save_dir)
 filename2 = f"extracted_plates/plate_{timestamp}.png"
