@@ -1,8 +1,10 @@
 import cv2
 import numpy as np
 
+for i in range (1,6):
+    file_name = f"../img/car{i}.jpg"
 win_name = "scanning"
-img = cv2.imread("../img/paper.jpg")
+img = cv2.imread(file_name)
 rows, cols = img.shape[:2]
 draw = img.copy()
 pts_cnt = 0
