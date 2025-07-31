@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import datetime
+import os
 
 for i in range (1,6):
     file_name = f"../img/car{i}.jpg"
@@ -13,7 +14,9 @@ pts_cnt = 0
 pts = np.zeros((4,2), dtype=np.float32)
 
 timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-
+save_dir = "extracted_plates"
+if not os.path.exists(save_dir):
+    os.makedirs(save_dir)
 filename2 = f"extracted_plates/plate_{timestamp}.png"
 
 def onMouse(event, x, y, flags, param):  #마우스 이벤트 콜백 함수 구현 ---① 
