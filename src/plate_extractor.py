@@ -12,7 +12,7 @@ draw = img.copy()
 pts_cnt = 0
 pts = np.zeros((4,2), dtype=np.float32)
 
-timestamp = datetime.dateime.now().strftime("%Y%m%d_%H%M%S")
+timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
 
 filename2 = f"extracted_plates/plate_{timestamp}.png"
 
