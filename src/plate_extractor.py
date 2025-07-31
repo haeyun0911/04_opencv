@@ -3,64 +3,68 @@ import numpy as np
 import datetime
 import os
 
-for i in range (1,6):
-    file_name = f"../img/car{i}.jpg"
-
-win_name = "License Plate Extractor"
-img = cv2.imread(file_name)
-rows, cols = img.shape[:2]
-draw = img.copy()
-pts_cnt = 0
-pts = np.zeros((4,2), dtype=np.float32)
-
-timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
 save_dir = "../extracted_plates"
 if not os.path.exists(save_dir):
     os.makedirs(save_dir)
-filename2 = os.path.join(save_dir, f"plate_{timestamp}.png")
+win_name = "License Plate Extractor" 
 
-def onMouse(event, x, y, flags, param):  #마우스 이벤트 콜백 함수 구현 ---① 
-    global  pts_cnt                     # 마우스로 찍은 좌표의 갯수 저장
-    if event == cv2.EVENT_LBUTTONDOWN:  
-        cv2.circle(draw, (x,y), 10, (0,255,0), -1) # 좌표에 초록색 동그라미 표시
-        cv2.imshow(win_name, draw)
+for i in range (1,6):
+    file_name = f"../img/car{i}.jpg"
 
-        pts[pts_cnt] = [x,y]            # 마우스 좌표 저장
-        pts_cnt+=1
-        if pts_cnt == 4:                       # 좌표가 4개 수집됨 
+    img = cv2.imread(file_name)
+    rows, cols = img.shape[:2]
+    draw = img.copy()
+    pts_cnt = 0
+    pts = np.zeros((4,2), dtype=np.float32)
+    result = None
+
+    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+
+
+    filename2 = os.path.join(save_dir, f"plate_{timestamp}.png")
+
+    def onMouse(event, x, y, flags, param):  #마우스 이벤트 콜백 함수 구현 ---① 
+        global  pts_cnt                     # 마우스로 찍은 좌표의 갯수 저장
+        if event == cv2.EVENT_LBUTTONDOWN and pts_cnt <4:  
+            cv2.circle(draw, (x,y), 10, (0,255,0), -1) # 좌표에 초록색 동그라미 표시
+            cv2.imshow(win_name, draw)
+
+            pts[pts_cnt] = [x,y]            # 마우스 좌표 저장
+            pts_cnt+=1
+            if pts_cnt == 4:                       # 좌표가 4개 수집됨 
             # 좌표 4개 중 상하좌우 찾기 ---② 
-            sm = pts.sum(axis=1)                 # 4쌍의 좌표 각각 x+y 계산
-            diff = np.diff(pts, axis = 1)       # 4쌍의 좌표 각각 x-y 계산
+                sm = pts.sum(axis=1)                 # 4쌍의 좌표 각각 x+y 계산
+                diff = np.diff(pts, axis = 1)       # 4쌍의 좌표 각각 x-y 계산
 
-            topLeft = pts[np.argmin(sm)]         # x+y가 가장 값이 좌상단 좌표
-            bottomRight = pts[np.argmax(sm)]     # x+y가 가장 큰 값이 우하단 좌표
-            topRight = pts[np.argmin(diff)]     # x-y가 가장 작은 것이 우상단 좌표
-            bottomLeft = pts[np.argmax(diff)]   # x-y가 가장 큰 값이 좌하단 좌표
+                topLeft = pts[np.argmin(sm)]         # x+y가 가장 값이 좌상단 좌표
+                bottomRight = pts[np.argmax(sm)]     # x+y가 가장 큰 값이 우하단 좌표
+                topRight = pts[np.argmin(diff)]     # x-y가 가장 작은 것이 우상단 좌표
+                bottomLeft = pts[np.argmax(diff)]   # x-y가 가장 큰 값이 좌하단 좌표
 
             # 변환 전 4개 좌표 
-            pts1 = np.float32([topLeft, topRight, bottomRight , bottomLeft])
+                pts1 = np.float32([topLeft, topRight, bottomRight , bottomLeft])
 
             # 변환 후 영상에 사용할 서류의 폭과 높이 계산 ---③ 
-            width = 300
-            height= 150
+                width = 300
+                height= 150
 
             # 변환 후 4개 좌표
-            pts2 = np.float32([[0,0], [width-1,0], 
+                pts2 = np.float32([[0,0], [width-1,0], 
                                 [width-1,height-1], [0,height-1]])
 
             # 변환 행렬 계산 
-            mtrx = cv2.getPerspectiveTransform(pts1, pts2)
+                mtrx = cv2.getPerspectiveTransform(pts1, pts2)
             # 원근 변환 적용
-            result = cv2.warpPerspective(img, mtrx, (int(width), int(height)))
-            success = cv2.imwrite(filename2, result)
-            if success:
-                print(f"번호판 저장 완료: {filename2}")
-                cv2.imshow('Extracted Plate', result)
+                result = cv2.warpPerspective(img, mtrx, (int(width), int(height)))
+                success = cv2.imwrite(filename2, result)
+                if success:
+                    print(f"[{i}] 번호판 저장 완료: {filename2}")
+                    cv2.imshow('Extracted Plate', result)
 
-            else:
-                print("저장 실패!")
-         
-cv2.imshow(win_name, img)
-cv2.setMouseCallback(win_name, onMouse)    # 마우스 콜백 함수를 GUI 윈도우에 등록 ---④
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+                else:
+                    print(f"[{i}] 저장 실패!")
+                       
+    cv2.imshow(win_name, img)
+    cv2.setMouseCallback(win_name, onMouse)    # 마우스 콜백 함수를 GUI 윈도우에 등록 ---④
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
